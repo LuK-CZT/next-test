@@ -2,11 +2,12 @@ import Head from 'next/head'
 import Image from 'next/image'
 import { useState } from 'react';
 import { useRouter } from 'next/router'
+import { useUsername } from '../components/usernameContext';
 
 export default function Home() {
 
   const router = useRouter()
-  const [username, setUsername] = useState('');
+  const { username, setUsername } = useUsername();
 
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {

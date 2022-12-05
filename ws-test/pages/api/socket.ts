@@ -1,15 +1,25 @@
-import { Server } from 'Socket.IO'
+import { NextApiRequest } from "next";
+import { Server } from "socket.io";
+import messageHandler from "../../utils/messageHandler";
 
-const SocketHandler = (req, res) => {
+export default function SocketHandler(req : NextApiRequest, res : any) {
 
   if (res.socket.server.io) {
-    console.log('Socket is already running')
-  } else {
-    console.log('Socket is initializing')
-    const io = new Server(res.socket.server)
-    res.socket.server.io = io
+    console.log("Already set up");
+    res.end();
+    return;
   }
-  res.end()
-}
 
-export default SocketHandler
+  const io = new Server(res.socket.server);
+  res.socket.server.io = io;
+
+  const onConnection = (socket : any) => {
+    messageHandler(io, socket);
+  };
+
+  // Define actions inside
+  io.on("connection", onConnection);
+
+  console.log("Setting up socket");
+  res.end();
+}

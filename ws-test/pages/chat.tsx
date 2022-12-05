@@ -1,38 +1,46 @@
 import { useEffect, useState } from 'react'
-import io from 'socket.io-client'
-const socket = io();
+import { useUsername } from '../components/usernameContext';
+import io from "socket.io-client";
+
+
+let socket;
+
+type Message = {
+  author: string;
+  message: string;
+};
 
 
 
 const Chat = () => {
 
-  const [isConnected, setIsConnected] = useState(socket.connected);
+  const { username } = useUsername();
+
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([]);
 
-  
-  useEffect(() => {
-    socket.on('connect', () => {
-      setIsConnected(true);
-    });
 
-    socket.on('disconnect', () => {
-      setIsConnected(false);
-    });
-
-
-    return () => {
-      socket.off('connect');
-      socket.off('disconnect');
-    };
-  }, []);
 
   return (
     <div>
       <h1 className='text'>Chat</h1>
-      <p> Connected: {isConnected ? 'Yes' : 'No'} </p>
+      <h2 className='text'> Username: {username} </h2>
+
+
+
+      <div className="msg-container">
+        {messages.map((message: Message, index) => (
+          <div key={index}>
+            <h3>{message.author} say : </h3>
+            <p className='text'>{message.message}</p>
+          </div>
+        ))}
+
+      </div>
     </div>
+
   )
+
 }
 
 export default Chat;
